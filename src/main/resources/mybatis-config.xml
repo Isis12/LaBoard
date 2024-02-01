@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mybatis 공통 환경 설정 -->
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<!-- <typeAlias alias="member" type="com.ye.board.bean.Member"/> -->
+		<package name="com.ye.board.bean"/>
+	</typeAliases>
+	<typeHandlers>
+	<!-- LocalDateTime 등록시 <typeAliases>아래에 등록할 것.-->
+	  <!--  <typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler" /> -->
+	</typeHandlers>
+</configuration>
