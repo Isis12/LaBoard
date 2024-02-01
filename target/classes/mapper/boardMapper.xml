@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- IBoardDao 전용 Mapper: 회원관련 sql -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ye.board.dao.IBoardDao">
+	<select id="getBoardList" parameterType="int" resultType="board">
+		<!-- <![CDATA[
+		SELECT * FROM BLIST WHERE RNUM>=#{pageNum}*10-9 
+			AND RNUM<=#{pageNum}*10
+		]]> -->
+		<!-- 게시글이 많을 때속도를 업하기 위해 -->
+		<!-- /*+INDEX_DESC(B PK_B_NUM)*/ : 인덱스를 타고 내림차순 검색 -->
+		<!-- 시너님 또는 원 테이블명을 쓰던지 일치해야 함. -->
+		<![CDATA[
+			SELECT * FROM (
+				SELECT /*+INDEX_DESC(BOARD PK_B_NUM)*/ ROWNUM RN, BOARD.*
+				FROM BOARD
+				WHERE ROWNUM <= #{pageNum} *10
+			)
+			WHERE RN >= #{pageNum} *10-9	
+		]]>	
+	</select>
+                           
+	<insert id="boardWrite" parameterType="board">
+		INSERT INTO BOARD (B_NUM, B_TITLE, B_CONTENTS, B_ID, B_DATE, B_VIEWS)
+		VALUES(B_SEQ.NEXTVAL, #{b_title}, #{b_contents}, #{b_id}, DEFAULT, DEFAULT)
+	</insert>
+	
+	<select id="getContents" parameterType="int" resultType="board">
+		SELECT * FROM BOARD WHERE B_NUM = #{b_num}
+	</select>
+	
+	<delete id="deleteBoard" parameterType="String">
+		DELETE FROM BOARD WHERE B_NUM = #{num}
+	</delete>
+
+	<select id="boardSearch" resultType="board">
+		SELECT * FROM BOARD
+		<where>
+			<if test="choice.equals('b_title')">
+				B_TITLE LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="choice.equals('b_id')">
+				B_ID LIKE '%' || #{keyword} || '%'
+			</if>
+		</where>
+	</select>
+	
+	<update id="boardmodify" parameterType="board">
+		UPDATE BOARD
+		   SET B_TITLE		= #{b_title},
+		       B_CONTENTS	= #{b_contents},
+		       B_ID			= #{b_id},
+		       B_DATE		= TO_CHAR(SYSDATE, 'YYYYMMDD')
+		 WHERE B_NUM = #{b_num}
+   </update>
+</mapper>
+
+
+
+
